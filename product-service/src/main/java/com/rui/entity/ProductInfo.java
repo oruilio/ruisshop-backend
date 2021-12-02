@@ -22,6 +22,7 @@ import lombok.EqualsAndHashCode;
   @EqualsAndHashCode(callSuper = false)
     public class ProductInfo implements Serializable {
 
+    //用于进行序列化 & 反序列化--用不到
     private static final long serialVersionUID=1L;
 
       @TableId(value = "product_id", type = IdType.AUTO)
