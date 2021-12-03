@@ -2,4 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.rui.mapper.ProductInfoMapper">
 
+    <select id="findPriceById" resultType="java.math.BigDecimal">
+        select product_price from product_info where product_id = #{id}
+    </select>
 </mapper>

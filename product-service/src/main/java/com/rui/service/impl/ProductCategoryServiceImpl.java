@@ -33,6 +33,7 @@ public class ProductCategoryServiceImpl extends ServiceImpl<ProductCategoryMappe
     private ProductInfoMapper productInfoMapper;
 
     //先查询所有分类，再查询分类下对应的商品
+    //相当于将两张数据表（productCategory和productInfo）整理成API：/buyer/product所需的数据格式
     @Override
     public List<ProductCategoryVO> findAllProductCategoryVO() {
         //1.获取所有分类

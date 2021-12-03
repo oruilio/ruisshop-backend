@@ -2,7 +2,8 @@ package com.rui.mapper;
 
 import com.rui.entity.ProductInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.springframework.stereotype.Repository;
+
+import java.math.BigDecimal;
 
 /**
  * <p>
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Repository;
  * @author Rui
  * @since 2021-12-02
  */
-@Repository
 public interface ProductInfoMapper extends BaseMapper<ProductInfo> {
-
+    public BigDecimal findPriceById(Integer id);
 }
