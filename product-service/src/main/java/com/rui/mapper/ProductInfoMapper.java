@@ -2,6 +2,7 @@ package com.rui.mapper;
 
 import com.rui.entity.ProductInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Repository;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author Rui
  * @since 2021-12-02
  */
+@Repository
 public interface ProductInfoMapper extends BaseMapper<ProductInfo> {
 
 }

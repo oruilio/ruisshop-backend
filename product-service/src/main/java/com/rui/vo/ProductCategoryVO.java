@@ -10,5 +10,5 @@ import java.util.List;
 public class ProductCategoryVO {
     private String name;
     private Integer type;
-    private List<ProductInfo> goods;
+    private List<ProductInfoVO> goods;
 }

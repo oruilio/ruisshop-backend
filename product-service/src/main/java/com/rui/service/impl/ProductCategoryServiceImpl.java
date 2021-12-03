@@ -1,10 +1,15 @@
 package com.rui.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.rui.entity.ProductInfo;
+import com.rui.mapper.ProductInfoMapper;
 import com.rui.service.ProductCategoryService;
 import com.rui.entity.ProductCategory;
 import com.rui.mapper.ProductCategoryMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.rui.vo.ProductCategoryVO;
+import com.rui.vo.ProductInfoVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,17 +29,32 @@ public class ProductCategoryServiceImpl extends ServiceImpl<ProductCategoryMappe
 
     @Autowired
     private ProductCategoryMapper productCategoryMapper;
+    @Autowired
+    private ProductInfoMapper productInfoMapper;
 
     //先查询所有分类，再查询分类下对应的商品
     @Override
     public List<ProductCategoryVO> findAllProductCategoryVO() {
-        //获取所有分类
+        //1.获取所有分类
         List<ProductCategory> productCategoryList = this.productCategoryMapper.selectList(null);
         List<ProductCategoryVO> productCategoryVOList = new ArrayList<>();
         for(ProductCategory productCategory : productCategoryList){
             ProductCategoryVO productCategoryVO = new ProductCategoryVO();
             productCategoryVO.setName(productCategory.getCategoryName());
             productCategoryVO.setType(productCategory.getCategoryType());
+
+            //2.获取具体good信息
+            QueryWrapper<ProductInfo> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("category_type", productCategory.getCategoryType());
+            List<ProductInfo> productInfoList = this.productInfoMapper.selectList(queryWrapper);
+            List<ProductInfoVO> productInfoVOList = new ArrayList<>();
+            for(ProductInfo productInfo: productInfoList){
+                ProductInfoVO productInfoVO = new ProductInfoVO();
+                BeanUtils.copyProperties(productInfo, productInfoVO);
+                productInfoVOList.add(productInfoVO);
+            }
+            productCategoryVO.setGoods(productInfoVOList);
+
             productCategoryVOList.add(productCategoryVO);
         }
 
