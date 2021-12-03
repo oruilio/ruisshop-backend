@@ -48,5 +48,13 @@ public class BuyerProductController {
     public ProductInfo findById(@PathVariable("id") Integer id){
         return this.productInfoService.getById(id);
     }
+
+    //减库存
+    @PutMapping("/subStockById/{id}/{quantity}")
+    public Boolean subStockById(
+            @PathVariable("id") Integer id,
+            @PathVariable("quantity") Integer quantity){
+        return this.productInfoService.subStockById(id, quantity);
+    }
 }
 

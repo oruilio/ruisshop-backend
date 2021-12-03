@@ -17,5 +17,6 @@ public interface ProductInfoService extends IService<ProductInfo> {
     //IService中提供的findById会返回该id的所有信息，效率较低
     //个性化方法可以提高效率
     public BigDecimal findPriceById(Integer id);
+    public Boolean subStockById(Integer id, Integer quantity);
 
 }
