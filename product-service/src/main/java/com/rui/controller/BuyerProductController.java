@@ -7,12 +7,9 @@ import com.rui.service.ProductInfoService;
 import com.rui.util.ResultVOUtil;
 import com.rui.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 
@@ -40,11 +37,16 @@ public class BuyerProductController {
         return ResultVOUtil.success(this.productCategoryService.findAllProductCategoryVO());
     }
 
-    //根据ID查询商品价格
+    //根据id查询商品价格
     @GetMapping("/findPriceById/{id}")
     public BigDecimal findPriceById(@PathVariable("id") Integer id){
         return this.productInfoService.findPriceById(id);
     }
 
+    //通过id查询商品
+    @GetMapping("findById/{id}")
+    public ProductInfo findById(@PathVariable("id") Integer id){
+        return this.productInfoService.getById(id);
+    }
 }
 
