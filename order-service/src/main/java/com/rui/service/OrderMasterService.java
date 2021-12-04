@@ -2,6 +2,7 @@ package com.rui.service;
 
 import com.rui.entity.OrderMaster;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.rui.form.OrderForm;
 
 /**
  * <p>
@@ -12,5 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2021-12-03
  */
 public interface OrderMasterService extends IService<OrderMaster> {
-
+    public Boolean create(OrderForm orderForm);
 }
