@@ -1,5 +1,8 @@
 package com.rui.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.rui.entity.OrderMaster;
 import com.rui.exception.ShopException;
 import com.rui.form.OrderForm;
 import com.rui.result.ResponseEnum;
@@ -8,11 +11,7 @@ import com.rui.util.ResultVOUtil;
 import com.rui.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -47,6 +46,20 @@ public class BuyerOrderController {
             return ResultVOUtil.success(map);
         }
         return ResultVOUtil.fail(null);
+    }
+
+    //返回订单列表
+    @GetMapping("/list/{buyerId}/{page}/{size}")
+    public ResultVO list(
+            @PathVariable("buyerId") Integer buyerId,
+            @PathVariable("page") Integer page,
+            @PathVariable("size") Integer size
+    ){
+        Page<OrderMaster> pageRule = new Page<>(page, size);
+        QueryWrapper<OrderMaster> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("buyer_openid", buyerId);
+        Page<OrderMaster> selectPage = this.orderMasterService.page(pageRule, queryWrapper);
+        return ResultVOUtil.success(selectPage.getRecords());
     }
 }
 
