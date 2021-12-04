@@ -2,19 +2,26 @@ package com.rui.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.rui.entity.OrderDetail;
 import com.rui.entity.OrderMaster;
 import com.rui.exception.ShopException;
 import com.rui.form.OrderForm;
 import com.rui.result.ResponseEnum;
+import com.rui.service.OrderDetailService;
 import com.rui.service.OrderMasterService;
 import com.rui.util.ResultVOUtil;
+import com.rui.vo.OrderDetailVO;
+import com.rui.vo.OrderMasterVO;
 import com.rui.vo.ResultVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,6 +38,8 @@ public class BuyerOrderController {
 
     @Autowired
     private OrderMasterService orderMasterService;
+    @Autowired
+    private OrderDetailService orderDetailService;
 
     //创建订单
     //创建一个实体类Form对应从前端传到后端的数据
@@ -60,6 +69,37 @@ public class BuyerOrderController {
         queryWrapper.eq("buyer_openid", buyerId);
         Page<OrderMaster> selectPage = this.orderMasterService.page(pageRule, queryWrapper);
         return ResultVOUtil.success(selectPage.getRecords());
+    }
+
+    //查询订单详情
+    @GetMapping("/detail/{buyerId}/{orderId}")
+    public ResultVO detail(
+            @PathVariable("buyerId") Integer buyerId,
+            @PathVariable("orderId") String orderId
+    ){
+        //从数据库中通过orderId，buyerId获取相应order master信息
+        QueryWrapper<OrderMaster> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("buyer_openid", buyerId);
+        queryWrapper.eq("order_id", orderId);
+        OrderMaster one = this.orderMasterService.getOne(queryWrapper);
+        //赋值到orderMasterVO中
+        OrderMasterVO orderMasterVO = new OrderMasterVO();
+        BeanUtils.copyProperties(one, orderMasterVO);
+
+        //从数据库中查询order_detail，所有order_id下的信息
+        QueryWrapper<OrderDetail> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("order_id", orderId);
+        List<OrderDetail> list = this.orderDetailService.list(queryWrapper1);
+        //注入orderDetailVOList
+        List<OrderDetailVO> orderDetailVOList = new ArrayList<>();
+        for (OrderDetail orderDetail : list) {
+            OrderDetailVO orderDetailVO = new OrderDetailVO();
+            BeanUtils.copyProperties(orderDetail, orderDetailVO);
+            orderDetailVOList.add(orderDetailVO);
+        }
+
+        orderMasterVO.setOrderDetailList(orderDetailVOList);
+        return ResultVOUtil.success(orderMasterVO);
     }
 }
 
