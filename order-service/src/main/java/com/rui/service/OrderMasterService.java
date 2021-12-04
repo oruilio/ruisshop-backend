@@ -13,5 +13,5 @@ import com.rui.form.OrderForm;
  * @since 2021-12-03
  */
 public interface OrderMasterService extends IService<OrderMaster> {
-    public Boolean create(OrderForm orderForm);
+    public String create(OrderForm orderForm);
 }
