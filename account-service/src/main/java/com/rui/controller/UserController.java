@@ -7,6 +7,7 @@ import com.rui.exception.ShopException;
 import com.rui.form.UserRegisterForm;
 import com.rui.result.ResponseEnum;
 import com.rui.service.UserService;
+import com.rui.util.MD5Util;
 import com.rui.util.RegexValidateUtil;
 import com.rui.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,11 @@ public class UserController {
         String code = (String) this.redisTemplate.opsForValue().get("uushop-sms-code-" + userRegisterForm.getMobile());
         //-判断和用户输入是否一致
         Assert.equals(code, userRegisterForm.getCode(), ResponseEnum.USER_CODE_ERROR);
+
+        //注册
+        User user = new User();
+        user.setMobile(userRegisterForm.getMobile());
+        user.setPassword(MD5Util.getSaltMD5(userRegisterForm.getPassword()));
 
         return null;
     }
