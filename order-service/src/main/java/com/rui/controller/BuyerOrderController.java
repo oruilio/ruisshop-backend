@@ -6,6 +6,7 @@ import com.rui.entity.OrderDetail;
 import com.rui.entity.OrderMaster;
 import com.rui.exception.ShopException;
 import com.rui.form.OrderForm;
+import com.rui.mapper.OrderMasterMapper;
 import com.rui.result.ResponseEnum;
 import com.rui.service.OrderDetailService;
 import com.rui.service.OrderMasterService;
@@ -40,6 +41,8 @@ public class BuyerOrderController {
     private OrderMasterService orderMasterService;
     @Autowired
     private OrderDetailService orderDetailService;
+    @Autowired
+    private OrderMasterMapper orderMasterMapper;
 
     //创建订单
     //创建一个实体类Form对应从前端传到后端的数据
@@ -101,5 +104,38 @@ public class BuyerOrderController {
         orderMasterVO.setOrderDetailList(orderDetailVOList);
         return ResultVOUtil.success(orderMasterVO);
     }
+
+    //取消订单 订单状态为2
+    @PutMapping("/cancel/{buyerId}/{orderId}")
+    public ResultVO cancel(
+            @PathVariable("buyerId") Integer buyerId,
+            @PathVariable("orderId") String orderId
+    ){
+        Boolean cancel = this.orderMasterMapper.cancel(buyerId, orderId);
+        if(cancel) return ResultVOUtil.success(null);
+        return ResultVOUtil.fail(null);
+    }
+
+    //完成订单，订单状态为1
+    @PutMapping("/finish/{orderId}")
+    public ResultVO finish(
+            @PathVariable("orderId") String orderId
+    ){
+        Boolean cancel = this.orderMasterMapper.finish( orderId);
+        if(cancel) return ResultVOUtil.success(null);
+        return ResultVOUtil.fail(null);
+    }
+
+    //支付订单，支付状态为1
+    @PutMapping("/pay/{buyerId}/{orderId}")
+    public ResultVO pay(
+            @PathVariable("buyerId") Integer buyerId,
+            @PathVariable("orderId") String orderId
+    ){
+        Boolean cancel = this.orderMasterMapper.pay(buyerId, orderId);
+        if(cancel) return ResultVOUtil.success(null);
+        return ResultVOUtil.fail(null);
+    }
+
 }
 
