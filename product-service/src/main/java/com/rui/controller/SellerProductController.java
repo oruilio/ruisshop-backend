@@ -178,6 +178,7 @@ public class SellerProductController {
     }
 
     //通过Id查询商品
+    //创建VO-SellerProductVOById
     @GetMapping("/findById/{id}")
     public ResultVO findById(@PathVariable("id") Integer id){
         //获取数据库中相应id商品信息
@@ -194,6 +195,14 @@ public class SellerProductController {
         vo.setCategory(map);
 
         return ResultVOUtil.success(vo);
+    }
+
+    //通过ID删除商品
+    @DeleteMapping("/delete/{id}")
+    public ResultVO delete(@PathVariable("id") Integer id){
+        boolean b = this.productInfoService.removeById(id);
+        if (b) return ResultVOUtil.success(null);
+        return ResultVOUtil.fail(null);
     }
 
 }
