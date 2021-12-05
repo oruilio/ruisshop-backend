@@ -9,6 +9,7 @@ import com.rui.result.ResponseEnum;
 import com.rui.service.UserService;
 import com.rui.util.MD5Util;
 import com.rui.util.RegexValidateUtil;
+import com.rui.util.ResultVOUtil;
 import com.rui.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -65,8 +66,9 @@ public class UserController {
         User user = new User();
         user.setMobile(userRegisterForm.getMobile());
         user.setPassword(MD5Util.getSaltMD5(userRegisterForm.getPassword()));
-
-        return null;
+        boolean save = this.userService.save(user);
+        if(save) return ResultVOUtil.success(null);
+        return ResultVOUtil.fail(null);
     }
 
 }
