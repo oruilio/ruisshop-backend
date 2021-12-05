@@ -2,16 +2,21 @@ package com.rui.controller;
 
 
 import com.rui.entity.ProductCategory;
+import com.rui.entity.ProductInfo;
+import com.rui.exception.ShopException;
+import com.rui.form.ProductForm;
+import com.rui.result.ResponseEnum;
 import com.rui.service.ProductCategoryService;
+import com.rui.service.ProductInfoService;
 import com.rui.util.ResultVOUtil;
 import com.rui.vo.ProductCategoryVO;
 import com.rui.vo.ResultVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
-
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +37,9 @@ public class SellerProductController {
     @Autowired
     ProductCategoryService productCategoryService;
 
+    @Autowired
+    ProductInfoService productInfoService;
+
     //查询所有商品分类
     //创建CategoryVO
     @GetMapping("/findAllProductCategory")
@@ -51,6 +59,25 @@ public class SellerProductController {
         map.put("content",voList);
 
         return ResultVOUtil.success(map);
+    }
+
+    //添加商品
+    @PostMapping("/add")
+    public ResultVO add(@Valid @RequestBody ProductForm productForm, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            throw new ShopException(ResponseEnum.PRODUCT_EMPTY.getMsg());
+        }
+
+        //赋值
+        ProductInfo productInfo = new ProductInfo();
+        BeanUtils.copyProperties(productForm, productInfo); //两者的属性名必须完全一致
+        productInfo.setProductStatus(1);
+
+        //添加到数据库中
+        boolean save = this.productInfoService.save(productInfo);
+
+        if(save) return ResultVOUtil.success(null);
+        return ResultVOUtil.fail(null);
     }
 
 }
