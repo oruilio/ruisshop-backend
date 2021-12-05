@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.rui.entity.ProductCategory;
 import com.rui.entity.ProductInfo;
 import com.rui.exception.ShopException;
+import com.rui.form.ProductEditForm;
 import com.rui.form.ProductForm;
 import com.rui.mapper.ProductCategoryMapper;
 import com.rui.mapper.ProductInfoMapper;
@@ -218,6 +219,28 @@ public class SellerProductController {
         if(status) statusInt = 1;
         Boolean aBoolean = this.productInfoMapper.updateStatusById(id, statusInt);
         if(aBoolean) return ResultVOUtil.success(null);
+        return ResultVOUtil.fail(null);
+    }
+
+    //修改商品详细信息--根据Id
+    //创建vo-ProductEditForm来接收前端传来的数据
+    @PutMapping("/update")
+    public ResultVO update(@Valid @RequestBody ProductEditForm productEditForm, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            throw new ShopException(ResponseEnum.PRODUCT_EMPTY.getMsg());
+        }
+
+        //整理数据赋值给数据库数据对象
+        ProductInfo productInfo = new ProductInfo();
+        BeanUtils.copyProperties(productEditForm, productInfo);
+        productInfo.setProductStatus(0);
+        if(productEditForm.getStatus()) productInfo.setProductStatus(1);
+        productInfo.setCategoryType(productEditForm.getCategory().getCategoryType());
+
+        //更新数据库数据
+        boolean b = this.productInfoService.updateById(productInfo);
+
+        if(b) return ResultVOUtil.success(null);
         return ResultVOUtil.fail(null);
     }
 
