@@ -17,4 +17,6 @@ public interface ProductInfoMapper extends BaseMapper<ProductInfo> {
     public BigDecimal findPriceById(Integer id);
     public Integer findStockById(Integer id);
     public Integer updateStockById(Integer id, Integer stock);
+
+    public Boolean updateStatusById(Integer id,Integer status);
 }

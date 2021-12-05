@@ -5,12 +5,17 @@
     <select id="findPriceById" resultType="java.math.BigDecimal">
         select product_price from product_info where product_id = #{id}
     </select>
+
     <select id="findStockById" resultType="java.lang.Integer">
         select product_stock from product_info where product_id = #{id}
     </select>
 
     <update id="updateStockById">
         update product_info set product_stock = #{param2} where product_id = #{param1}
+    </update>
+
+    <update id="updateStatusById">
+        update product_info set product_status = #{param2} where product_id = #{param1}
     </update>
 
 </mapper>

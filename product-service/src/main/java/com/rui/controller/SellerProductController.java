@@ -8,6 +8,7 @@ import com.rui.entity.ProductInfo;
 import com.rui.exception.ShopException;
 import com.rui.form.ProductForm;
 import com.rui.mapper.ProductCategoryMapper;
+import com.rui.mapper.ProductInfoMapper;
 import com.rui.result.ResponseEnum;
 import com.rui.service.ProductCategoryService;
 import com.rui.service.ProductInfoService;
@@ -47,6 +48,9 @@ public class SellerProductController {
 
     @Autowired
     ProductCategoryMapper productCategoryMapper;
+
+    @Autowired
+    ProductInfoMapper productInfoMapper;
 
     //查询所有商品分类
     //创建CategoryVO
@@ -202,6 +206,18 @@ public class SellerProductController {
     public ResultVO delete(@PathVariable("id") Integer id){
         boolean b = this.productInfoService.removeById(id);
         if (b) return ResultVOUtil.success(null);
+        return ResultVOUtil.fail(null);
+    }
+
+    //修改商品状态
+    //在mapper中创建新的sql方法
+    @PutMapping("/updateStatus/{id}/{status}")
+    public ResultVO updateStatus(@PathVariable("id") Integer id,
+                                 @PathVariable("status") Boolean status){
+        Integer statusInt = 0;
+        if(status) statusInt = 1;
+        Boolean aBoolean = this.productInfoMapper.updateStatusById(id, statusInt);
+        if(aBoolean) return ResultVOUtil.success(null);
         return ResultVOUtil.fail(null);
     }
 
