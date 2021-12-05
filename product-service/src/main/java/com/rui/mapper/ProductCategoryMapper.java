@@ -14,5 +14,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ProductCategoryMapper extends BaseMapper<ProductCategory> {
-
+    public String getNameByType(Integer type);
 }

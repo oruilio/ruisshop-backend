@@ -1,16 +1,19 @@
 package com.rui.controller;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.rui.entity.ProductCategory;
 import com.rui.entity.ProductInfo;
 import com.rui.exception.ShopException;
 import com.rui.form.ProductForm;
+import com.rui.mapper.ProductCategoryMapper;
 import com.rui.result.ResponseEnum;
 import com.rui.service.ProductCategoryService;
 import com.rui.service.ProductInfoService;
 import com.rui.util.ResultVOUtil;
 import com.rui.vo.ProductCategoryVO;
 import com.rui.vo.ResultVO;
+import com.rui.vo.SellerProductVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -39,6 +42,9 @@ public class SellerProductController {
 
     @Autowired
     ProductInfoService productInfoService;
+
+    @Autowired
+    ProductCategoryMapper productCategoryMapper;
 
     //查询所有商品分类
     //创建CategoryVO
@@ -78,6 +84,39 @@ public class SellerProductController {
 
         if(save) return ResultVOUtil.success(null);
         return ResultVOUtil.fail(null);
+    }
+
+    //查询商品所有商品--分页
+    //创建返回数据SellerProductVO
+    @GetMapping("/list/{page}/{size}")
+    public ResultVO list(@PathVariable("page") Integer page,
+                         @PathVariable("size") Integer size){
+        //设置分页信息
+        Page<ProductInfo> page1 = new Page<>(page, size);
+        //从数据库中查询需要呈现的页面
+        Page<ProductInfo> selectPage= this.productInfoService.page(page1, null);
+        //获取呈现页面上的所有记录的具体数据
+        List<ProductInfo> records = selectPage.getRecords();
+
+        //对呈现的数据vo进行赋值
+        List<SellerProductVO> voList = new ArrayList<>();
+        for (ProductInfo record : records) {
+            SellerProductVO vo = new SellerProductVO();
+            BeanUtils.copyProperties(record, vo);
+            if (record.getProductStatus() == 1) {
+                vo.setStatus(true);
+            }
+            String nameByType = this.productCategoryMapper.getNameByType(record.getCategoryType());
+            vo.setCategoryName(nameByType);
+            voList.add(vo);
+        }
+
+        //封装返回给前端的数据
+        Map<String,Object> map = new HashMap<>();
+        map.put("content", voList);      //给前端返回vo
+        map.put("size", selectPage.getSize());
+        map.put("total", selectPage.getTotal());
+        return ResultVOUtil.success(map);
     }
 
 }
