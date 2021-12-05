@@ -1,6 +1,7 @@
 package com.rui.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.rui.entity.ProductCategory;
 import com.rui.entity.ProductInfo;
@@ -114,6 +115,34 @@ public class SellerProductController {
         //封装返回给前端的数据
         Map<String,Object> map = new HashMap<>();
         map.put("content", voList);      //给前端返回vo
+        map.put("size", selectPage.getSize());
+        map.put("total", selectPage.getTotal());
+        return ResultVOUtil.success(map);
+    }
+
+    //商品的模糊查询
+    @GetMapping("/like/{page}/{size}/{keyWord}")
+    public ResultVO like(@PathVariable("page") Integer page,
+                         @PathVariable("size") Integer size,
+                         @PathVariable("keyWord") String keyWord){
+        Page<ProductInfo> page1 = new Page<>(page, size);
+        QueryWrapper<ProductInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like("product_name", keyWord);   //和商品查询相比只多了模糊查询条件
+        Page<ProductInfo> selectPage = this.productInfoService.page(page1, queryWrapper);
+        List<ProductInfo> records = selectPage.getRecords();
+        List<SellerProductVO> voList = new ArrayList<>();
+        for (ProductInfo record : records) {
+            SellerProductVO vo = new SellerProductVO();
+            BeanUtils.copyProperties(record, vo);
+            if (record.getProductStatus() == 1) {
+                vo.setStatus(true);
+            }
+            String nameByType = this.productCategoryMapper.getNameByType(record.getCategoryType());
+            vo.setCategoryName(nameByType);
+            voList.add(vo);
+        }
+        Map<String,Object> map = new HashMap<>();
+        map.put("content", voList);
         map.put("size", selectPage.getSize());
         map.put("total", selectPage.getTotal());
         return ResultVOUtil.success(map);
