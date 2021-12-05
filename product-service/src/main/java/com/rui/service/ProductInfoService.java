@@ -2,8 +2,10 @@ package com.rui.service;
 
 import com.rui.entity.ProductInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.rui.vo.ProductExcelVO;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * <p>
@@ -18,5 +20,5 @@ public interface ProductInfoService extends IService<ProductInfo> {
     //个性化方法可以提高效率
     public BigDecimal findPriceById(Integer id);
     public Boolean subStockById(Integer id, Integer quantity);
-
+    public List<ProductExcelVO> productExcelVOList();
 }

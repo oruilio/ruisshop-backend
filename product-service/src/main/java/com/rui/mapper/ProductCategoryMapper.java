@@ -14,5 +14,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ProductCategoryMapper extends BaseMapper<ProductCategory> {
+    //通过数字获取分类名
     public String getNameByType(Integer type);
 }

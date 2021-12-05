@@ -1,6 +1,7 @@
 package com.rui.controller;
 
 
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.rui.entity.ProductCategory;
@@ -8,22 +9,23 @@ import com.rui.entity.ProductInfo;
 import com.rui.exception.ShopException;
 import com.rui.form.ProductEditForm;
 import com.rui.form.ProductForm;
+import com.rui.handler.CustomCellWriteHandler;
 import com.rui.mapper.ProductCategoryMapper;
 import com.rui.mapper.ProductInfoMapper;
 import com.rui.result.ResponseEnum;
 import com.rui.service.ProductCategoryService;
 import com.rui.service.ProductInfoService;
 import com.rui.util.ResultVOUtil;
-import com.rui.vo.ProductCategoryVO;
-import com.rui.vo.ResultVO;
-import com.rui.vo.SellerProductVO;
-import com.rui.vo.SellerProductVOById;
+import com.rui.vo.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -242,6 +244,26 @@ public class SellerProductController {
 
         if(b) return ResultVOUtil.success(null);
         return ResultVOUtil.fail(null);
+    }
+
+    //导出所有商品信息为excel表格
+    @GetMapping("/export")
+    public void exportData(HttpServletResponse response) {
+        try {
+            response.setContentType("application/vnd.ms-excel");
+            response.setCharacterEncoding("UTF-8");
+            String fileName = URLEncoder.encode("商品信息", "UTF-8");
+            response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+
+            List<ProductExcelVO> productExcelVOList = this.productInfoService.productExcelVOList();
+
+            EasyExcel.write(response.getOutputStream(), ProductExcelVO.class)
+                    .registerWriteHandler(new CustomCellWriteHandler())
+                    .sheet("商品信息")
+                    .doWrite(productExcelVOList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
