@@ -101,5 +101,15 @@ public class UserController {
         return ResultVOUtil.success(userVO);
     }
 
+
+    //验证token
+    //token是前端默认封装传入的，非用户手动传入的
+    @GetMapping("/checkToken/{token}")
+    public ResultVO checkToken(@PathVariable("token") String token){
+        boolean b = JwtUtil.checkToken(token);
+        if(b) return ResultVOUtil.success(null);
+        return ResultVOUtil.fail(null);
+    }
+
 }
 

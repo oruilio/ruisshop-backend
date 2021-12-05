@@ -12,7 +12,6 @@ import java.util.UUID;
 public class JwtUtil {
 
     private static long tokenExpiration = 1000 * 60 * 60 * 24; //ms数 -- 24h
-    //    private static long tokenExpiration = 1000 * 60;
     private static String tokenSignKey = "r1u23i789";
 
     public static String createToken(Integer id,String mobile){
