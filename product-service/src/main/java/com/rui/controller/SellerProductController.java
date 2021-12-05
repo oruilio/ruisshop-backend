@@ -120,7 +120,7 @@ public class SellerProductController {
         return ResultVOUtil.success(map);
     }
 
-    //商品的模糊查询
+    //商品的模糊查询 -- 分页
     @GetMapping("/like/{page}/{size}/{keyWord}")
     public ResultVO like(@PathVariable("page") Integer page,
                          @PathVariable("size") Integer size,
@@ -128,6 +128,34 @@ public class SellerProductController {
         Page<ProductInfo> page1 = new Page<>(page, size);
         QueryWrapper<ProductInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.like("product_name", keyWord);   //和商品查询相比只多了模糊查询条件
+        Page<ProductInfo> selectPage = this.productInfoService.page(page1, queryWrapper);
+        List<ProductInfo> records = selectPage.getRecords();
+        List<SellerProductVO> voList = new ArrayList<>();
+        for (ProductInfo record : records) {
+            SellerProductVO vo = new SellerProductVO();
+            BeanUtils.copyProperties(record, vo);
+            if (record.getProductStatus() == 1) {
+                vo.setStatus(true);
+            }
+            String nameByType = this.productCategoryMapper.getNameByType(record.getCategoryType());
+            vo.setCategoryName(nameByType);
+            voList.add(vo);
+        }
+        Map<String,Object> map = new HashMap<>();
+        map.put("content", voList);
+        map.put("size", selectPage.getSize());
+        map.put("total", selectPage.getTotal());
+        return ResultVOUtil.success(map);
+    }
+
+    //通过分类查询商品
+    @GetMapping("/findByCategory/{page}/{size}/{categoryType}")
+    public ResultVO findByCategory(@PathVariable("page") Integer page,
+                                   @PathVariable("size") Integer size,
+                                   @PathVariable("categoryType") Integer categoryType){
+        Page<ProductInfo> page1 = new Page<>(page, size);
+        QueryWrapper<ProductInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("category_type", categoryType);    //添加商品分类查询条件
         Page<ProductInfo> selectPage = this.productInfoService.page(page1, queryWrapper);
         List<ProductInfo> records = selectPage.getRecords();
         List<SellerProductVO> voList = new ArrayList<>();
