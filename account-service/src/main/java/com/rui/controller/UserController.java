@@ -4,21 +4,20 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.rui.entity.User;
 import com.rui.exception.Assert;
 import com.rui.exception.ShopException;
+import com.rui.form.UserLoginForm;
 import com.rui.form.UserRegisterForm;
 import com.rui.result.ResponseEnum;
 import com.rui.service.UserService;
+import com.rui.util.JwtUtil;
 import com.rui.util.MD5Util;
 import com.rui.util.RegexValidateUtil;
 import com.rui.util.ResultVOUtil;
 import com.rui.vo.ResultVO;
+import com.rui.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -39,7 +38,8 @@ public class UserController {
     @Autowired
     private RedisTemplate redisTemplate;
 
-    @PostMapping("/register/")
+    //注册用户
+    @PostMapping("/register")
     public ResultVO register(@Valid @RequestBody UserRegisterForm userRegisterForm, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             throw new ShopException(ResponseEnum.USER_INFO_NULL.getMsg());
@@ -69,6 +69,36 @@ public class UserController {
         boolean save = this.userService.save(user);
         if(save) return ResultVOUtil.success(null);
         return ResultVOUtil.fail(null);
+    }
+
+    //用户登陆
+    //get请求无法传入JSON格式数据，参数中不能使用@RequestBody注解
+    @GetMapping("/login")
+    public ResultVO login(@Valid UserLoginForm userLoginForm, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            throw new ShopException(ResponseEnum.USER_INFO_NULL.getMsg());
+        }
+
+        //根据手机号查询数据库中的加密密码
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("mobile", userLoginForm.getMobile());
+        User one = this.userService.getOne(queryWrapper);
+        if(one == null){
+            throw new ShopException(ResponseEnum.USER_MOBILE_NULL.getMsg());
+        }
+        //判断加密后的输入密码是否和数据库中密码一致
+        boolean saltverifyMD5 = MD5Util.getSaltverifyMD5(userLoginForm.getPassword(), one.getPassword());
+        if(!saltverifyMD5){
+            throw new ShopException(ResponseEnum.PASSWORD_ERROR.getMsg());
+        }
+
+        //一致 - 返回数据库中的用户信息
+        UserVO userVO = new UserVO();
+        userVO.setMobile(one.getMobile());
+        userVO.setUserId(one.getUserId());
+        userVO.setPassword(one.getPassword());
+        userVO.setToken(JwtUtil.createToken(one.getUserId(), one.getMobile()));
+        return ResultVOUtil.success(userVO);
     }
 
 }
