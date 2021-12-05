@@ -1,5 +1,9 @@
 server:
   port: 8083
+jdwx:
+  url: https://way.jd.com/chonry/smsapi
+  appkey: 58e694e2ebd0796552b7173b3afb9ade
+  sign: RuisShop
 spring:
   application:
     name: sms-service
