@@ -15,6 +15,7 @@ import com.rui.util.ResultVOUtil;
 import com.rui.vo.ProductCategoryVO;
 import com.rui.vo.ResultVO;
 import com.rui.vo.SellerProductVO;
+import com.rui.vo.SellerProductVOById;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -174,6 +175,25 @@ public class SellerProductController {
         map.put("size", selectPage.getSize());
         map.put("total", selectPage.getTotal());
         return ResultVOUtil.success(map);
+    }
+
+    //通过Id查询商品
+    @GetMapping("/findById/{id}")
+    public ResultVO findById(@PathVariable("id") Integer id){
+        //获取数据库中相应id商品信息
+        ProductInfo byId = this.productInfoService.getById(id);
+
+        //赋值
+        SellerProductVOById vo = new SellerProductVOById();
+        BeanUtils.copyProperties(byId, vo);
+        if (byId.getProductStatus() == 1) {
+            vo.setStatus(true);
+        }
+        Map<String,Integer> map = new HashMap<>();
+        map.put("categoryType", byId.getCategoryType());
+        vo.setCategory(map);
+
+        return ResultVOUtil.success(vo);
     }
 
 }
