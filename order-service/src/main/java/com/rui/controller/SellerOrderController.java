@@ -3,15 +3,12 @@ package com.rui.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.rui.entity.OrderMaster;
+import com.rui.mapper.OrderMasterMapper;
 import com.rui.service.OrderMasterService;
 import com.rui.util.ResultVOUtil;
 import com.rui.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +28,9 @@ public class SellerOrderController {
     @Autowired
     OrderMasterService orderMasterService;
 
+    @Autowired
+    OrderMasterMapper orderMasterMapper;
+
     //查询所有订单--分页
     @GetMapping("/list/{page}/{size}")
     public ResultVO list(
@@ -48,6 +48,24 @@ public class SellerOrderController {
         map.put("size", selectPage.getSize());
         map.put("total", selectPage.getTotal());
         return ResultVOUtil.success(map);
+    }
+
+    //取消订单
+    //实质是修改订单状态为2
+    @PutMapping("/cancel/{orderId}")
+    public ResultVO cancel(@PathVariable("orderId") String orderId){
+        Boolean aBoolean = this.orderMasterMapper.updateStatusByOrderId(orderId, 2);
+        if(aBoolean) return ResultVOUtil.success(null);
+        return ResultVOUtil.fail(null);
+    }
+
+    //完成订单
+    //实质是修改订单状态为1
+    @PutMapping("/finish/{orderId}")
+    public ResultVO finish(@PathVariable("orderId") String orderId){
+        Boolean aBoolean = this.orderMasterMapper.updateStatusByOrderId(orderId, 1);
+        if(aBoolean) return ResultVOUtil.success(null);
+        return ResultVOUtil.fail(null);
     }
 }
 
