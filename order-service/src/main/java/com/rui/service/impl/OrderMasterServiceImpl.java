@@ -1,6 +1,7 @@
 package com.rui.service.impl;
 
 import com.rui.dto.BarDTO;
+import com.rui.dto.BaseLineDTO;
 import com.rui.entity.OrderDetail;
 import com.rui.entity.OrderMaster;
 import com.rui.entity.ProductInfo;
@@ -20,7 +21,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -103,5 +106,20 @@ public class OrderMasterServiceImpl extends ServiceImpl<OrderMasterMapper, Order
         barDataVO.setNames(names);
 
         return barDataVO;
+    }
+
+    @Override
+    public Map<String, List> createBaseLineData() {
+        List<BaseLineDTO> baseLineDTOS = this.orderMasterMapper.baseLine();
+        List<String> names = new ArrayList<>();
+        List<Integer> values = new ArrayList<>();
+        for (BaseLineDTO baseLineDTO : baseLineDTOS) {
+            names.add(baseLineDTO.getDate());
+            values.add(baseLineDTO.getValue());
+        }
+        Map<String,List> map = new HashMap<>();
+        map.put("names", names);
+        map.put("values", values);
+        return map;
     }
 }

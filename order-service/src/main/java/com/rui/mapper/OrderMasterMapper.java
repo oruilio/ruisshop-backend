@@ -1,6 +1,7 @@
 package com.rui.mapper;
 
 import com.rui.dto.BarDTO;
+import com.rui.dto.BaseLineDTO;
 import com.rui.entity.OrderMaster;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -23,4 +24,5 @@ public interface OrderMasterMapper extends BaseMapper<OrderMaster> {
     public Boolean updateStatusByOrderId(String orderId,Integer status);
 
     public List<BarDTO> bar();
+    public List<BaseLineDTO> baseLine();
 }

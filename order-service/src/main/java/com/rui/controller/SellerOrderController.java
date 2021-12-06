@@ -69,10 +69,17 @@ public class SellerOrderController {
     }
 
 
-    //返回呈现呢柱状图所需数据
+    //返回呈现柱状图所需数据
     @GetMapping("/barSale")
     public ResultVO barSale(){
         return ResultVOUtil.success(this.orderMasterService.createBarData());
     }
+
+    //返回呈现基础折线图所需数据
+    @GetMapping("/basicLineSale")
+    public ResultVO basicLineSale(){
+        return ResultVOUtil.success(this.orderMasterService.createBaseLineData());
+    }
+
 }
 

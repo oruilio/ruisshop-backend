@@ -21,4 +21,8 @@
     <select id="bar" resultType="com.rui.dto.BarDTO">
          select product_name name,sum(product_quantity) value  from order_detail group by product_name
     </select>
+
+    <select id="baseLine" resultType="com.rui.dto.BaseLineDTO">
+        select DATE_FORMAT(create_time, '%Y-%m-%d') date,sum(product_quantity) value from order_detail group by date order by date
+    </select>
 </mapper>
