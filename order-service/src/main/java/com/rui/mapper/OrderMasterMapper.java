@@ -1,7 +1,10 @@
 package com.rui.mapper;
 
+import com.rui.dto.BarDTO;
 import com.rui.entity.OrderMaster;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -18,4 +21,6 @@ public interface OrderMasterMapper extends BaseMapper<OrderMaster> {
     public Boolean pay(Integer buyerId,String orderId);
 
     public Boolean updateStatusByOrderId(String orderId,Integer status);
+
+    public List<BarDTO> bar();
 }

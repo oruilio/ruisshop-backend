@@ -17,4 +17,8 @@
     <update id="updateStatusByOrderId">
         update order_master set order_status = #{param2} where order_id = #{param1}
     </update>
+
+    <select id="bar" resultType="com.rui.dto.BarDTO">
+         select product_name name,sum(product_quantity) value  from order_detail group by product_name
+    </select>
 </mapper>

@@ -1,5 +1,6 @@
 package com.rui.service.impl;
 
+import com.rui.dto.BarDTO;
 import com.rui.entity.OrderDetail;
 import com.rui.entity.OrderMaster;
 import com.rui.entity.ProductInfo;
@@ -10,11 +11,15 @@ import com.rui.mapper.OrderDetailMapper;
 import com.rui.mapper.OrderMasterMapper;
 import com.rui.service.OrderMasterService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.rui.util.EChartsColorUtil;
+import com.rui.vo.BarDataVO;
+import com.rui.vo.BarStyleVO;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -73,5 +78,30 @@ public class OrderMasterServiceImpl extends ServiceImpl<OrderMasterMapper, Order
         }
 
         return orderMaster.getOrderId();
+    }
+
+    //创建显示bar所需要的数据类型
+    @Override
+    public BarDataVO createBarData() {
+        //从数据库中取出数据
+        List<BarDTO> barDTOList = this.orderMasterMapper.bar();
+
+        //创建返回数据类型
+        BarDataVO barDataVO = new BarDataVO();
+
+        //赋值
+        List<String> names =  new ArrayList<>();
+        List<BarStyleVO> values = new ArrayList<>();
+        for(BarDTO barDTO: barDTOList){
+            names.add(barDTO.getName());
+            BarStyleVO barStyleVO = new BarStyleVO();
+            barStyleVO.setValue(barDTO.getValue());
+            barStyleVO.setItemStyle(EChartsColorUtil.createItemStyle(barDTO.getValue()));
+            values.add(barStyleVO);
+        }
+        barDataVO.setValues(values);
+        barDataVO.setNames(names);
+
+        return barDataVO;
     }
 }

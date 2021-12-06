@@ -3,6 +3,7 @@ package com.rui.service;
 import com.rui.entity.OrderMaster;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.rui.form.OrderForm;
+import com.rui.vo.BarDataVO;
 
 /**
  * <p>
@@ -14,4 +15,5 @@ import com.rui.form.OrderForm;
  */
 public interface OrderMasterService extends IService<OrderMaster> {
     public String create(OrderForm orderForm);
+    public BarDataVO createBarData();
 }

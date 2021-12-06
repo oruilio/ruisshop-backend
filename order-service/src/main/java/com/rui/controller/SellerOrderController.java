@@ -67,5 +67,12 @@ public class SellerOrderController {
         if(aBoolean) return ResultVOUtil.success(null);
         return ResultVOUtil.fail(null);
     }
+
+
+    //返回呈现呢柱状图所需数据
+    @GetMapping("/barSale")
+    public ResultVO barSale(){
+        return ResultVOUtil.success(this.orderMasterService.createBarData());
+    }
 }
 
