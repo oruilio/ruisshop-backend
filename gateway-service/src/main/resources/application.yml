@@ -5,6 +5,15 @@ spring:
     name: gateway
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:     #解决跨域问题，网关处统一解决其他服务内就不需要重复业务#
+          '[/**]':
+            allowed-origins:
+              - "http://localhost:8383"
+              - "http://localhost:8282"
+            allowed-headers: "*"
+            allowed-methods: "*"
+            max-age: 3600
       discovery:
         locator:
           enabled: true
