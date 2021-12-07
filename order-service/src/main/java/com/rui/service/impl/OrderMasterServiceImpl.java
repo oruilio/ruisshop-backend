@@ -17,6 +17,7 @@ import com.rui.vo.BarDataVO;
 import com.rui.vo.BarStyleVO;
 import com.rui.vo.StackedInnerVO;
 import com.rui.vo.StackedVO;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,8 @@ public class OrderMasterServiceImpl extends ServiceImpl<OrderMasterMapper, Order
     private OrderDetailMapper orderDetailMapper;
     @Autowired
     private ProductFeign productFeign;
+    @Autowired
+    private RocketMQTemplate rocketMQTemplate;
 
     @Override
     public String create(OrderForm orderForm) {
@@ -81,6 +84,9 @@ public class OrderMasterServiceImpl extends ServiceImpl<OrderMasterMapper, Order
             orderDetail.setOrderId(orderMaster.getOrderId());  //所以存订单详情要放在order存入数据库后
             this.orderDetailMapper.insert(orderDetail);
         }
+
+        //将订单信息存入DB的同时也存入MQ，VUE前端工程可以通过mq-service访问MQ获取信息实现异步通信
+        this.rocketMQTemplate.convertAndSend("newOrder", "新订单");
 
         return orderMaster.getOrderId();
     }

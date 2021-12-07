@@ -1,0 +1,7 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: mq-serivce
+rocketmq:
+  name-server: localhost:9876
