@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 
@@ -58,8 +59,9 @@ public class AdminController {
     }
 
     //和user中的token校验一致
-    @GetMapping("/checkToken/{token}")
-    public ResultVO checkToken(@PathVariable("token") String token){
+    @GetMapping("/checkToken")
+    public ResultVO checkToken(HttpServletRequest request){
+        String token = request.getHeader("token");
         boolean b = JwtUtil.checkToken(token);
         if(b) return ResultVOUtil.success(null);
         return ResultVOUtil.fail(null);

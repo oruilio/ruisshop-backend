@@ -19,6 +19,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 /**
@@ -104,8 +105,9 @@ public class UserController {
 
     //验证token
     //token是前端默认封装传入的，非用户手动传入的
-    @GetMapping("/checkToken/{token}")
-    public ResultVO checkToken(@PathVariable("token") String token){
+    @GetMapping("/checkToken")
+    public ResultVO checkToken(HttpServletRequest request){
+        String token = request.getHeader("token");
         boolean b = JwtUtil.checkToken(token);
         if(b) return ResultVOUtil.success(null);
         return ResultVOUtil.fail(null);
