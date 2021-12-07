@@ -22,7 +22,7 @@ import java.util.Map;
  * @since 2021-12-03
  */
 @RestController
-@RequestMapping("//orderDetail")
+@RequestMapping("/seller/order")
 public class SellerOrderController {
 
     @Autowired
