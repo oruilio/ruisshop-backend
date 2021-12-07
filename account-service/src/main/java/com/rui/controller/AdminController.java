@@ -15,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,6 +37,8 @@ public class AdminController {
     @Autowired
     AdminService adminService;
 
+    //使用用户名和密码登陆
+    //生成token
     @GetMapping("/login")
     public ResultVO login(@Valid AdminForm adminForm, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
@@ -52,6 +55,14 @@ public class AdminController {
         BeanUtils.copyProperties(one, adminVO);
         adminVO.setToken(JwtUtil.createToken(one.getAdminId(), one.getUsername()));
         return ResultVOUtil.success(adminVO);
+    }
+
+    //和user中的token校验一致
+    @GetMapping("/checkToken/{token}")
+    public ResultVO checkToken(@PathVariable("token") String token){
+        boolean b = JwtUtil.checkToken(token);
+        if(b) return ResultVOUtil.success(null);
+        return ResultVOUtil.fail(null);
     }
 }
 
