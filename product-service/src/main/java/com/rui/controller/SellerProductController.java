@@ -21,6 +21,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -264,6 +265,23 @@ public class SellerProductController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    //通过excel批量输入商品信息
+    @PostMapping("/import")
+    public ResultVO importData(@RequestParam("file") MultipartFile file){
+        List<ProductInfo> productInfoList = null;
+        try {
+            productInfoList = this.productInfoService.excleToProductInfoList(file.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(productInfoList==null){
+            return ResultVOUtil.fail("导入Excel失败！");
+        }
+        boolean result = this.productInfoService.saveBatch(productInfoList);
+        if(result)return ResultVOUtil.success(null);
+        return ResultVOUtil.fail("导入Excel失败！");
     }
 
 }

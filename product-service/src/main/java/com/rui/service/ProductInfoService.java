@@ -4,6 +4,7 @@ import com.rui.entity.ProductInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.rui.vo.ProductExcelVO;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -21,4 +22,5 @@ public interface ProductInfoService extends IService<ProductInfo> {
     public BigDecimal findPriceById(Integer id);
     public Boolean subStockById(Integer id, Integer quantity);
     public List<ProductExcelVO> productExcelVOList();
+    public List<ProductInfo> excleToProductInfoList(InputStream inputStream);
 }
