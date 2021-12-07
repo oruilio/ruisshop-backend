@@ -81,5 +81,10 @@ public class SellerOrderController {
         return ResultVOUtil.success(this.orderMasterService.createBaseLineData());
     }
 
+    //获取所有商品在有销售记录的日期中的销售总额折线图
+    @GetMapping("/stackedLineSale")
+    public ResultVO stackedLineSale(){
+        return ResultVOUtil.success(this.orderMasterService.createStackedData());
+    }
 }
 

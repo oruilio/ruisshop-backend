@@ -25,4 +25,8 @@ public interface OrderMasterMapper extends BaseMapper<OrderMaster> {
 
     public List<BarDTO> bar();
     public List<BaseLineDTO> baseLine();
+
+    public List<String> findAllNames();
+    public List<String> findAllDates();
+    public List<Integer> findDatas(String name);
 }

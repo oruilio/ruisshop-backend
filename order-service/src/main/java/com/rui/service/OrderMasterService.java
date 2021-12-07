@@ -4,6 +4,7 @@ import com.rui.entity.OrderMaster;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.rui.form.OrderForm;
 import com.rui.vo.BarDataVO;
+import com.rui.vo.StackedVO;
 
 import java.util.List;
 import java.util.Map;
@@ -20,4 +21,5 @@ public interface OrderMasterService extends IService<OrderMaster> {
     public String create(OrderForm orderForm);
     public BarDataVO createBarData();
     public Map<String, List> createBaseLineData();
+    public StackedVO createStackedData();
 }

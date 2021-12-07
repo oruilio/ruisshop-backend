@@ -15,6 +15,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.rui.util.EChartsColorUtil;
 import com.rui.vo.BarDataVO;
 import com.rui.vo.BarStyleVO;
+import com.rui.vo.StackedInnerVO;
+import com.rui.vo.StackedVO;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -122,4 +124,29 @@ public class OrderMasterServiceImpl extends ServiceImpl<OrderMasterMapper, Order
         map.put("values", values);
         return map;
     }
+
+
+    //-取出所有商品名称
+    //-取出有销售记录的日期
+    //-将所有商品和有销售记录的日期对应，计算当日该商品的总销售额再一一对应
+    //折线对应商品，横坐标对应有销售记录的日期，纵坐标对应该日期当前商品销售总数
+    @Override
+    public StackedVO createStackedData() {
+        StackedVO stackedVO = new StackedVO();
+        List<String> names = this.orderMasterMapper.findAllNames();
+        List<String> dates = this.orderMasterMapper.findAllDates();
+        List<StackedInnerVO> datas = new ArrayList<>();
+        for (String name : names) {
+            List<Integer> list = this.orderMasterMapper.findDatas(name);
+            StackedInnerVO stackedInnerVO = new StackedInnerVO();
+            stackedInnerVO.setName(name);
+            stackedInnerVO.setData(list);
+            datas.add(stackedInnerVO);
+        }
+        stackedVO.setNames(names);
+        stackedVO.setDates(dates);
+        stackedVO.setDatas(datas);
+        return stackedVO;
+    }
+
 }
