@@ -1,0 +1,10 @@
+server:
+  port: 8686
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
