@@ -4,7 +4,7 @@
 
 
 
-![分布式项目结构图](/Users/rui/Desktop/2021-找工作/IDEA/ruisshop/images/分布式项目结构图.png)
+![分布式项目结构图](https://github.com/oruilio/ruisshop-backend/blob/master/image-1.png)
 
 共9个子项目：
 
